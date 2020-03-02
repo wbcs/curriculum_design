@@ -1,0 +1,10 @@
+  
+node_modules
+*.pyc
+*.log
+.DS_Store
+db.sqlite3
+.idea
+.vscode
+__pycache__
+migrations
