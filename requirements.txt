@@ -8,7 +8,7 @@ chronos-python==0.34.0
 coreapi==2.3.3
 coreschema==0.0.4
 cssselect==1.1.0
-Django==3.0.2
+django>=3.0.3
 graypy==0.3.2
 httplib2==0.15.0
 idna==2.8
