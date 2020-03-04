@@ -5,14 +5,59 @@ from django.views import View
 from django.http import HttpResponse
 from django.views.generic import View
 from django.contrib.auth.hashers import make_password
-
 from curriculum_design.models import Student, Teacher
-# from curriculum_design.utils.validate import ValidateSignUpParams
+
 
 class LoginView(View):
 
+  def get_bool(self, request, key):
+    val = request.POST.get(key)
+    return val == 'true'
+
   def get(self, *args, **kwargs):
     return HttpResponse('fuck you')
+
+  def post(self, request):
+    identity = self.get_bool(request, 'identity')
+    
+    if identity:
+      user_id = request.POST.get('id')
+      password = request.POST.get('password')
+      stu = Student.objects.get(user_id=user_id)
+      if stu.password == password:
+        content = json.dumps({
+          # 'status': 200,
+          'code': 0,
+          'msg': 'login success.'
+        })
+      else:
+        content = json.dumps({
+          # 'status': 200,
+          'code': 0,
+          'msg': 'password is wrong.'
+        })
+      res = HttpResponse(content=content, content_type='text/json')
+      res.set_signed_cookie('session_id', user_id, max_age=60 * 60, salt='fuck')
+      return res
+    else:
+      phone = request.POST.get('phone')
+      password = request.POST.get('password')
+      teacher = Teacher.objects.get(phone=phone)
+      if teacher.password == password:
+        content = json.dumps({
+          'code': 0,
+          'msg': 'login success.'
+        })
+      else:
+        content = json.dumps({
+          'code': 0,
+          'msg': 'password is wrong.'
+        })
+      res = HttpResponse(content=content, content_type='text/json')
+      res.set_signed_cookie('session_id', phone, max_age=60 * 60, salt='fuck')
+      return res
+
+
 
 class SignUpView(View):
 
@@ -97,4 +142,20 @@ class SignUpView(View):
       return HttpResponse(err, content_type='text/json')
 
 
-__all__ = ['LoginView', 'SignUpView']
+class IsLogin(View):
+  def get(self, request):
+    try:
+      key = request.get_signed_cookie('session_id', salt='fuck')
+      content = json.dumps({
+        'code': 0,
+        'msg': 'login'
+      })
+    except Exception:
+      content = json.dumps({
+        'code': 0,
+        'msg': 'not login'
+      })
+    return HttpResponse(content=content)
+
+
+__all__ = ['LoginView', 'SignUpView', 'IsLogin']
