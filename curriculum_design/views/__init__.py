@@ -1,4 +1,3 @@
-
 import json, re
 
 from django.views import View
@@ -152,7 +151,7 @@ class IsLogin(View):
       })
     except Exception:
       content = json.dumps({
-        'code': 0,
+        'code': 1,
         'msg': 'not login'
       })
     return HttpResponse(content=content)
