@@ -10,7 +10,7 @@ coreschema==0.0.4
 cssselect==1.1.0
 django>=3.0.3
 graypy==0.3.2
-httplib2==0.15.0
+httplib2==0.18.0
 idna==2.8
 isort==4.3.21
 itypes==1.1.0
